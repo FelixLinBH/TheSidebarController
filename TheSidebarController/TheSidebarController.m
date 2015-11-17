@@ -29,7 +29,9 @@ static const CGFloat kAnimationDuration = 0.3f;
 static const CGFloat kVisibleWidth = 260.0f;
 
 
-@interface TheSidebarController()
+@interface TheSidebarController(){
+    UITapGestureRecognizer *tapGesture;
+}
 
 @property (assign, nonatomic) SidebarTransitionStyle selectedTransitionStyle;
 @property (assign, nonatomic) Side selectedSide;
@@ -83,6 +85,7 @@ static const CGFloat kVisibleWidth = 260.0f;
         _visibleWidth = kVisibleWidth;
         _sidebarAnimations = @[SIDEBAR_ANIMATIONS];
         _sidebarIsPresenting = NO;
+        tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissSidebarViewController)];
     }
     
     return self;
@@ -235,6 +238,9 @@ static const CGFloat kVisibleWidth = 260.0f;
         self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
     }
     
+    
+    [self.contentContainerViewController.view addGestureRecognizer:tapGesture];
+    
     self.selectedSide = side;
     self.selectedTransitionStyle = transitionStyle;
     
@@ -270,6 +276,8 @@ static const CGFloat kVisibleWidth = 260.0f;
     {
         [self.delegate sidebarController:self willHideViewController:self.selectedSidebarViewController];
     }
+    
+    [self.contentContainerViewController.view removeGestureRecognizer:tapGesture];
     
     NSString *animationClassName = self.sidebarAnimations[self.selectedTransitionStyle];
     Class animationClass = NSClassFromString(animationClassName);
@@ -405,5 +413,6 @@ static const CGFloat kVisibleWidth = 260.0f;
     
     return nil;
 }
+
 
 @end
